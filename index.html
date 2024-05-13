@@ -15,10 +15,10 @@
         </script>
     </head>
     <body>
-        <textarea id="input" cols="80" rows="24" spellcheck="false">#include <stdio.h>
+        <textarea id="input" cols="80" rows="24" spellcheck="false">#include <iostream>
 
 int main(void) {
-    printf("Hello wasm!\n");
+    std::cout << __clang_version__ << std::endl;
 }
 </textarea>
         <br/>

@@ -5,11 +5,17 @@ import Lld from './lld.js'
 await init()
 
 export const compileAndRun = async (mainC) => {
+    console.time('clang compile')
     const clang = await Clang()
-    clang.FS.writeFile('main.c', mainC)
-    await clang.callMain(['-c', 'main.c'])
+    clang.FS.writeFile('main.cpp', mainC)
+    await clang.callMain([
+        '-c',
+        'main.cpp'
+    ])
+    console.timeEnd('clang compile')
     const mainO = clang.FS.readFile('main.o')
 
+    console.time('lld link')
     const lld = await Lld()
     lld.FS.writeFile('main.o', mainO)
     await lld.callMain([
@@ -19,12 +25,13 @@ export const compileAndRun = async (mainC) => {
         '-lc',
         '-lc++',
         '-lc++abi',
-        '/lib/clang/14.0.6/lib/wasi/libclang_rt.builtins-wasm32.a',
+        '/lib/clang/18/lib/wasi/libclang_rt.builtins-wasm32.a',
         '/lib/wasm32-wasi/crt1.o',
         'main.o',
         '-o',
         'main.wasm',
     ])
+    console.timeEnd('lld link')
     const mainWasm = lld.FS.readFile('main.wasm')
 
     const wasi = new WASI({})
