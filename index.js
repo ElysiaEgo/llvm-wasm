@@ -9,6 +9,7 @@ export const compileAndRun = async (mainC) => {
     const clang = await Clang()
     clang.FS.writeFile('main.cpp', mainC)
     await clang.callMain([
+        '-std=c++23',
         '-c',
         'main.cpp'
     ])
